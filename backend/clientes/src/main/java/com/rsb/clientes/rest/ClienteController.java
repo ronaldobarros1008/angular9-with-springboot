@@ -1,5 +1,7 @@
 package com.rsb.clientes.rest;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +31,7 @@ public class ClienteController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cliente salvar( @RequestBody Cliente cliente) {
+	public Cliente salvar( @RequestBody @Valid Cliente cliente) {
 		return repository.save(cliente);
 	}
 	
@@ -37,7 +39,7 @@ public class ClienteController {
 	public Cliente acharPorId(@PathVariable Integer id) {
 		return repository
 				.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encotrado"));
 	}
 	
 	@DeleteMapping("{id}")
@@ -49,7 +51,7 @@ public class ClienteController {
 				repository.delete(cliente);
 				return Void.TYPE;
 			})
-			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encotrado"));
 	}
 	
 	@PutMapping("{id}")
@@ -62,6 +64,6 @@ public class ClienteController {
 				cliente.setCpf(clienteAtualizado.getCpf());
 				return repository.save(cliente);
 			})
-			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encotrado"));
 	}
 }
