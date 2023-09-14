@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.rsb.clientes.exception.UsuarioCadastradoException;
 import com.rsb.clientes.model.repository.UsuarioRepository;
 import com.rsb.model.entity.Usuario;
 
@@ -15,6 +16,14 @@ public class UsuarioService implements UserDetailsService {
 	
 	@Autowired
 	private UsuarioRepository repository;
+	
+	public Usuario salvar(Usuario usuario) {
+		boolean exists = repository.existsByUsername(usuario.getUsername());
+		if(exists) {
+			throw new UsuarioCadastradoException(usuario.getUsername());
+		}
+		return repository.save(usuario);
+	}
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
